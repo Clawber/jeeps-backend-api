@@ -10,15 +10,13 @@ const courses = [
 
 ]
 
-router.get('/', (req, res) => {
-  res.send('Hello World');
-});
+//   /api/courses/
 
-router.get('/api/courses', (req, res) => {
+router.get('/', (req, res) => {
   res.send(courses);
 });
 
-router.get('/api/courses/:id', (req, res) => {
+router.get('/:id', (req, res) => {
   // req.params to get req fields  
   const course = courses.find(c => c.id === parseInt(req.params.id));
 
@@ -31,7 +29,7 @@ router.get('/api/courses/:id', (req, res) => {
 
 // need to parse json
 // post input validation
-router.post('/api/courses', (req, res) => {
+router.post('/', (req, res) => {
   // declaring schema, for input validation
   const result = validateCourse(req.body);    // object destructuring possible
   
@@ -82,7 +80,7 @@ router.post('/api/courses', (req, res) => {
     return updated course
     
 */
-router.put('/api/courses/:id', (req, res) => {
+router.put('/:id', (req, res) => {
   const course = courses.find(c => c.id === parseInt(req.params.id))
 
   if (!course) {
@@ -112,7 +110,7 @@ function validateCourse(course) {
 
 
 
-router.delete('/api/courses/:id', (req, res) => {
+router.delete('/:id', (req, res) => {
   const course = courses.find(c => c.id === parseInt(req.params.id));
 
   // not found, error 404

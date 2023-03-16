@@ -9,6 +9,21 @@ const PORT = 3000;
 app.use(express.json());
 
 // from another files
+// courses
+const userCourses = require('./routes/courses')
+app.use('/api/courses', userCourses);
+
+// jeeps
+const userJeeps = require('./routes/jeeps')
+app.use('/api/jeeps', userJeeps);
+
+
+
+
+
+app.get('/', (req, res) => {
+  res.send('Hello World');
+});
 
 
 
