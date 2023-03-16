@@ -1,59 +1,153 @@
-const express = require("express");
+// uses express
+// joi input validation
+const express = require('express');
+const Joi = require('joi');       //capital because class
 const app = express();
-const port = process.env.PORT || 3001;
 
-app.get("/", (req, res) => res.type('html').send(html));
+app.use(express.json());
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+const courses = [
+  { id: 1, name: 'course1'}, 
+  { id: 2, name: 'course2'}, 
+  { id: 3, name: 'course3'}, 
+
+]
+
+app.get('/', (req, res) => {
+  res.send('Hello World');
+});
+
+app.get('/api/courses', (req, res) => {
+  res.send(courses);
+});
+
+app.get('/api/courses/:id', (req, res) => {
+  // req.params to get req fields  
+  const course = courses.find(c => c.id === parseInt(req.params.id));
+
+  // if no course (error), send 404
+  if (!course) {
+    res.status(404).send('The course with the given ID was not found')
+  }
+  res.send(course);
+});
+
+// need to parse json
+// post input validation
+app.post('/api/courses', (req, res) => {
+  // declaring schema, for input validation
+  const result = validateCourse(req.body);    // object destructuring possible
+  
+  if (result.error) {
+    res.status(400).send(result.error.details[0].message);
+    return;
+  }
 
 
-const html = `
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Hello from Render!</title>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <script>
-      setTimeout(() => {
-        confetti({
-          particleCount: 100,
-          spread: 70,
-          origin: { y: 0.6 },
-          disableForReducedMotion: true
-        });
-      }, 500);
-    </script>
-    <style>
-      @import url("https://p.typekit.net/p.css?s=1&k=vnd5zic&ht=tk&f=39475.39476.39477.39478.39479.39480.39481.39482&a=18673890&app=typekit&e=css");
-      @font-face {
-        font-family: "neo-sans";
-        src: url("https://use.typekit.net/af/00ac0a/00000000000000003b9b2033/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff2"), url("https://use.typekit.net/af/00ac0a/00000000000000003b9b2033/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("woff"), url("https://use.typekit.net/af/00ac0a/00000000000000003b9b2033/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3") format("opentype");
-        font-style: normal;
-        font-weight: 700;
-      }
-      html {
-        font-family: neo-sans;
-        font-weight: 700;
-        font-size: calc(62rem / 16);
-      }
-      body {
-        background: white;
-      }
-      section {
-        border-radius: 1em;
-        padding: 1em;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-right: -50%;
-        transform: translate(-50%, -50%);
-      }
-    </style>
-  </head>
-  <body>
-    <section>
-      Hello from Render!
-    </section>
-  </body>
-</html>
-`
+  // js truthy falsy bullshit, true when not null
+  if (result.error) {
+    // super dirty joi traversal
+    res.status(400).send(result.error.details[0].message);
+    return;
+  }
+
+  /*-----------------without joi----------------
+  if (!req.body.name || req.body.name.length < 3) {
+    // 400 Bad Request
+    res.status(400).send('Name is required and should be minimum 3 chars')
+    return;
+  }
+  */
+
+  /*Joi notes
+  error value   joi.validate
+  */
+
+
+  const course = {
+    id: courses.length + 1,   //no database version
+    name: req.body.name     // need to parse json first
+  };
+  courses.push(course);
+  res.send(course);
+});
+
+
+/*
+  modify a course
+    look for the course
+    if not exist, error 404
+
+    validate 
+    if invalid, 400 - Bad request
+
+    update course string
+    return updated course
+    
+*/
+app.put('/api/courses/:id', (req, res) => {
+  const course = courses.find(c => c.id === parseInt(req.params.id))
+
+  if (!course) {
+    res.status(404).send('The course with the given ID was not found.')
+    return;
+  }
+
+  const result = validateCourse(req.body);    // object destructuring possible
+  
+  if (result.error) {
+    res.status(400).send(result.error.details[0].message);
+    return;
+  }
+
+  course.name = req.body.name;
+  res.send(course);
+
+
+})
+
+function validateCourse(course) {
+  const schema = {
+    name: Joi.string().min(3).required()
+  };
+  return Joi.validate(course, schema)
+}
+
+
+
+app.delete('/api/courses/:id', (req, res) => {
+  const course = courses.find(c => c.id === parseInt(req.params.id));
+
+  // not found, error 404
+  if (!course) {
+    res.status(404).send('The course with the given ID was not found')
+  }
+
+  // find index, delete
+  const index = courses.indexOf(course);
+  courses.splice(index, 1);
+
+  res.send(course);
+
+
+});
+
+
+
+app.listen(3003, () => console.log('listin'));
+
+
+
+/* TODO
+
+
+
+https://web.postman.co/workspace/My-Workspace~b7431ffc-0aee-4aae-88e9-ea819342ca72/request/create?requestId=bad2cad2-4f05-40aa-b744-12c229fe6d67
+Joi how to allow any parameter (in id)
+yt video in 47:59
+
+
+https://jeeps-api.onrender.com/
+
+
+*/
