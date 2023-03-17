@@ -3,6 +3,9 @@
 const express = require('express');
 const Joi = require('joi');       //capital because class
 const app = express();
+const cors = require('cors')
+
+app.use(cors())
 
 const PORT = 3000;
 
@@ -29,7 +32,7 @@ app.get('/', (req, res) => {
 
 app.listen(PORT, () => console.log('listin'));
 
-
+// localhost:3000
 
 
 

@@ -10,6 +10,14 @@ const jeeps = [
   {id: 2, coords: [14.64728358,	121.0623173] }, 
 ]
 
+/*
+
+
+
+
+*/
+
+
 router.get('/', (req, res) => {
   res.send(jeeps);
 });
