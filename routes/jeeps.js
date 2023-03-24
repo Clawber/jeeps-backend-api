@@ -42,7 +42,19 @@ router.put('/:id', (req, res) => {
   // TODO input validation JOI
 
   jeep.coords = req.body.coords;
-  res.send(course);
+  res.send(jeep);
+
+  /*
+  Sample request
+  {
+    "id": 1,
+    "coords": [
+        14.6575533,
+        121.0742258
+    ]
+  }
+
+  */
 
 })
 

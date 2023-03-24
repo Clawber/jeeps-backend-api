@@ -46,7 +46,8 @@ Joi how to allow any parameter (in id)
 yt video in 47:59
 
 
-https://jeeps-api.onrender.com/
+https://jeeps-api.onrender.com/api/jeeps/id
 
+https://jeeps-api.onrender.com/api/jeeps/1
 
 */
