@@ -11,22 +11,22 @@ const PORT = 3000;
 const userCourses = require('./routes/courses')
 const userJeeps = require('./routes/jeeps')
 
-
 app.use('/api/courses', userCourses);
 app.use('/api/jeeps', userJeeps);
-
 
 app.get('/', (req, res) => {
   res.send('Hello World');
 });
 
-
 app.listen(PORT, () => console.log('Api deployed'));
 
-
-
-/* TODO
+/* API endpoints
 link of API
+web:
 https://jeeps-api.onrender.com/api/jeeps/id
 https://jeeps-api.onrender.com/api/jeeps/1
+
+localhost:
+http://localhost:3000/
+http://localhost:3000/api/jeeps/
 */
