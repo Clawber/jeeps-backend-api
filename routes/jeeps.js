@@ -1,8 +1,26 @@
 const express = require("express");
 const router = express.Router()
 
+const pool = require('../config/db')
 
-// kalat, wala munang database
+
+
+const getJeepById = (request, response) => {
+  const id = parseInt(request.params.id)
+  pool.query("SELECT coords FROM tracker WHERE id = $1 ORDER BY id", [id], (error, results) => {
+    if (error) {
+      throw error
+    } 
+    console.log(results.rows);
+    coords = results.rows[0].coords
+    message = {"id":1,
+          "coords": [coords.x, coords.y]
+        }
+    console.log(message);
+    response.status(200).json(message)
+  } )
+}
+
 
 
 const jeeps = [
@@ -10,26 +28,20 @@ const jeeps = [
   {id: 2, coords: [14.64728358,	121.0623173] }, 
 ]
 
-/*
 
 
-
-
-*/
-
-
+// http://localhost:3000/api/jeeps/
 router.get('/', (req, res) => {
   res.send(jeeps);
 });
 
-router.get('/:id', (req, res) => {
-  const jeep = jeeps.find(c => c.id === parseInt(req.params.id));
 
-  if (!jeep) {
-    res.status(404).send('The jeep with the given ID was not found')
-  }
-  res.send(jeep);
-})
+
+router.get('/:id', getJeepById)
+
+
+
+
 
 router.put('/:id', (req, res) => {
   const jeep = jeeps.find(c => c.id === parseInt(req.params.id))
@@ -58,8 +70,6 @@ router.put('/:id', (req, res) => {
 
 })
 
-
-
 module.exports = router;
 
 
@@ -73,8 +83,11 @@ GET a single jeep
 PUT a single jeep
   modify values
 
-
-
+handle 
+application/x-www-form-urlencoded
 
 
 */
+
+// https://jeeps-api.onrender.com/api/jeeps/$id
+// localhost:3000/api/jeeps/$id
