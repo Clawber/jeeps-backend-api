@@ -4,13 +4,23 @@ const router = express.Router()
 const pool = require('../config/db')
 
 
-// db querying
-let jeepneyID = 1
-let queryString = `SELECT coords FROM tracker WHERE id = ${jeepneyID} ORDER BY id`;
-pool.query(queryString, (err, res) => {
-  if (err) throw err;
-  console.log(res.rows);
-});
+
+const getJeepById = (request, response) => {
+  const id = parseInt(request.params.id)
+  pool.query("SELECT coords FROM tracker WHERE id = $1 ORDER BY id", [id], (error, results) => {
+    if (error) {
+      throw error
+    } 
+    console.log(results.rows);
+    coords = results.rows[0].coords
+    message = {"id":1,
+          "coords": [coords.x, coords.y]
+        }
+    console.log(message);
+    response.status(200).json(message)
+  } )
+}
+
 
 
 const jeeps = [
@@ -26,18 +36,10 @@ router.get('/', (req, res) => {
 });
 
 
-router.get('/:id', (req, res) => {
-  id = req.params.id;
-  // let jeep = jeeps.find(c => c.id === parseInt(id));
-  let jeep;
-/*
-link:
-output of: 
-https://jeeps-api.onrender.com/api/jeeps/1
-{"id":1,"coords":[14.6575533,121.0742258]}
-*/
 
-})
+router.get('/:id', getJeepById)
+
+
 
 
 
@@ -88,3 +90,4 @@ application/x-www-form-urlencoded
 */
 
 // https://jeeps-api.onrender.com/api/jeeps/$id
+// localhost:3000/api/jeeps/$id
