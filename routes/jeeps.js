@@ -5,6 +5,18 @@ const pool = require('../config/db')
 
 
 
+
+const getJeeps = (request, response) => {
+  pool.query("SELECT * FROM tracker", (error, results) => {
+    if (error) {
+      throw error
+    } http://localhost:3000/api/jeeps/
+    console.log(results.rows);
+    response.status(200).json(results.rows)
+  } )
+}
+
+
 const getJeepById = (request, response) => {
   const id = parseInt(request.params.id)
   pool.query("SELECT coords FROM tracker WHERE id = $1 ORDER BY id", [id], (error, results) => {
@@ -31,14 +43,8 @@ const jeeps = [
 
 
 // http://localhost:3000/api/jeeps/
-router.get('/', (req, res) => {
-  res.send(jeeps);
-});
-
-
-
+router.get('/', getJeeps)
 router.get('/:id', getJeepById)
-
 
 
 
