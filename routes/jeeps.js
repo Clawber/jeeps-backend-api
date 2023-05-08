@@ -10,7 +10,7 @@ const getJeeps = (request, response) => {
   pool.query("SELECT * FROM tracker", (error, results) => {
     if (error) {
       throw error
-    } http://localhost:3000/api/jeeps/
+    } 
     console.log(results.rows);
     response.status(200).json(results.rows)
   } )
@@ -34,7 +34,6 @@ const getJeepById = (request, response) => {
 }
 
 
-
 const jeeps = [
   {id: 1, coords: [14.6575533,	121.0742258] }, 
   {id: 2, coords: [14.64728358,	121.0623173] }, 
@@ -42,12 +41,10 @@ const jeeps = [
 
 
 
+
 // http://localhost:3000/api/jeeps/
 router.get('/', getJeeps)
 router.get('/:id', getJeepById)
-
-
-
 
 router.put('/:id', (req, res) => {
   const jeep = jeeps.find(c => c.id === parseInt(req.params.id))
@@ -76,6 +73,8 @@ router.put('/:id', (req, res) => {
 
 })
 
+
+
 module.exports = router;
 
 
@@ -89,11 +88,8 @@ GET a single jeep
 PUT a single jeep
   modify values
 
-handle 
-application/x-www-form-urlencoded
+
+
 
 
 */
-
-// https://jeeps-api.onrender.com/api/jeeps/$id
-// localhost:3000/api/jeeps/$id
