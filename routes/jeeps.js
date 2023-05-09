@@ -7,29 +7,30 @@ const pool = require('../config/db')
 
 
 const getJeeps = (request, response) => {
+  console.log("GET all");
   pool.query("SELECT * FROM tracker", (error, results) => {
     if (error) {
       throw error
     } 
-    console.log(results.rows);
     response.status(200).json(results.rows)
   } )
 }
 
 // Bug TODO
 const getJeepById = (request, response) => {
+  console.log("GET by ID");
   const id = parseInt(request.params.id)
 
   pool.query(`SELECT coords FROM tracker WHERE id = ${id} ORDER BY id`, (error, results) => {
     if (error) {
       throw error
     } 
-    console.log(results.rows);
+
     coords = results.rows[0].coords
     message = {"id": id,
           "coords": [coords.x, coords.y]
         }
-    console.log(message);
+
     response.status(200).json(message)
   } )
 }
@@ -38,7 +39,7 @@ const getJeepById = (request, response) => {
 
 
 
-
+// https://jeeps-api.onrender.com/api/jeeps/1
 
 // http://localhost:3000/api/jeeps/
 router.get('/', getJeeps)
@@ -49,12 +50,13 @@ router.get('/:id', getJeepById)
 // json data 
 // {"coords": [14.64827247,121.0737752]}
 router.post('/:id', (request, response) => {
+  console.log("POST request: \n Contents: ");
+
   const id = parseInt(request.params.id)
   const data = request.body;
-  // data = { coords: [ 14.64827247, 121.0737752 ] }
 
-  console.log(data.coords);
-  console.log(data.coords[0]);
+  console.log(data);
+  // data = { coords: [ 14.64827247, 121.0737752 ] }
 
 
   let x = data.coords[0]
@@ -63,8 +65,6 @@ router.post('/:id', (request, response) => {
 
   let query = `UPDATE tracker SET coords = '(${x},${y})' WHERE id = ${id}`;
 
-  console.log(query);
-
   pool.query(query, (error, results) => {
     if (error) {
       throw error
@@ -72,8 +72,6 @@ router.post('/:id', (request, response) => {
     let message = "goods"
     response.status(200).json(message)
   } )
-
-
 
 })
 
