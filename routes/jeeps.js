@@ -35,10 +35,7 @@ const getJeepById = (request, response) => {
 }
 
 
-const jeeps = [
-  {id: 1, coords: [14.6575533,	121.0742258] }, 
-  {id: 2, coords: [14.64728358,	121.0623173] }, 
-]
+
 
 
 
@@ -46,6 +43,39 @@ const jeeps = [
 // http://localhost:3000/api/jeeps/
 router.get('/', getJeeps)
 router.get('/:id', getJeepById)
+
+
+
+// json data 
+// {"coords": [14.64827247,121.0737752]}
+router.post('/:id', (request, response) => {
+  const id = parseInt(request.params.id)
+  const data = request.body;
+  // data = { coords: [ 14.64827247, 121.0737752 ] }
+
+  console.log(data.coords);
+  console.log(data.coords[0]);
+
+
+  let x = data.coords[0]
+  let y = data.coords[1]
+
+
+  let query = `UPDATE tracker SET coords = '(${x},${y})' WHERE id = ${id}`;
+
+  console.log(query);
+
+  pool.query(query, (error, results) => {
+    if (error) {
+      throw error
+    } 
+    let message = "goods"
+    response.status(200).json(message)
+  } )
+
+
+
+})
 
 
 
@@ -71,10 +101,12 @@ router.put('/:id', (req, res) => {
         121.0742258
     ]
   }
-
   */
 
 })
+
+
+
 
 
 
@@ -96,3 +128,25 @@ PUT a single jeep
 
 
 */
+
+
+/*
+
+[14.65945055,    121.0726833]
+[14.64827247,    121.0737752]
+[14.652349354571994, 121.06794118881227 ]
+[14.652992357786058, 121.06233000755311]
+[14.65764329,    121.062349]
+
+
+
+===================================================
+editing the coords of a jeep
+
+
+
+UPDATE tracker SET coords = '(coords.x , coords.y)' WHERE id = 1;
+
+*/
+
+
