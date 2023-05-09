@@ -16,16 +16,17 @@ const getJeeps = (request, response) => {
   } )
 }
 
-
+// Bug TODO
 const getJeepById = (request, response) => {
   const id = parseInt(request.params.id)
-  pool.query("SELECT coords FROM tracker WHERE id = $1 ORDER BY id", [id], (error, results) => {
+
+  pool.query(`SELECT coords FROM tracker WHERE id = ${id} ORDER BY id`, (error, results) => {
     if (error) {
       throw error
     } 
     console.log(results.rows);
     coords = results.rows[0].coords
-    message = {"id":1,
+    message = {"id": id,
           "coords": [coords.x, coords.y]
         }
     console.log(message);
@@ -45,6 +46,8 @@ const jeeps = [
 // http://localhost:3000/api/jeeps/
 router.get('/', getJeeps)
 router.get('/:id', getJeepById)
+
+
 
 router.put('/:id', (req, res) => {
   const jeep = jeeps.find(c => c.id === parseInt(req.params.id))
