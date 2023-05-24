@@ -1,9 +1,12 @@
+const Joi = require('joi');
 const express = require("express");
 const router = express.Router()
 
 const pool = require('../config/db')
 
-
+const coords_schema = Joi.object({
+  coords: Joi.array().items(Joi.number().required(), Joi.number().required()).length(2).required()
+})
 
 
 const getJeeps = (request, response) => {
@@ -50,6 +53,11 @@ router.get('/:id', getJeepById)
 // json data 
 // {"coords": [14.64827247,121.0737752]}
 router.post('/:id', (request, response) => {
+  const { error } = coords_schema.validate(request.body)
+  if (error) {
+    response.status(400).json({ error: error.details[0].message});
+  }
+
   console.log("POST request: \n Contents: ");
 
   const id = parseInt(request.params.id)
@@ -72,7 +80,8 @@ router.post('/:id', (request, response) => {
     let message = "goods"
     response.status(200).json(message)
   } )
-  response.status(200).json("not success :<")
+  // why does this line break code??
+  // response.status(200).json("not success :<")
 })
 
 
