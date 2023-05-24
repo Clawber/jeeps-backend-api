@@ -1,0 +1,5 @@
+
+# GET
+GET https://jeeps-api.onrender.com/api/jeeps/1
+
+
