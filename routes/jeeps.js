@@ -19,7 +19,6 @@ const getJeeps = (request, response) => {
   } )
 }
 
-// Bug TODO
 const getJeepById = (request, response) => {
   console.log("GET by ID");
   const id = parseInt(request.params.id)
@@ -38,12 +37,7 @@ const getJeepById = (request, response) => {
   } )
 }
 
-
-
-
-
 // https://jeeps-api.onrender.com/api/jeeps/1
-
 // http://localhost:3000/api/jeeps/
 router.get('/', getJeeps)
 router.get('/:id', getJeepById)
@@ -56,34 +50,29 @@ router.post('/:id', (request, response) => {
   const { error } = coords_schema.validate(request.body)
   if (error) {
     response.status(400).json({ error: error.details[0].message});
+  } else {
+    console.log("POST request: \n Contents: ");
+
+    const id = parseInt(request.params.id)
+    const data = request.body;
+
+    console.log(data);
+    // data = { coords: [ 14.64827247, 121.0737752 ] }
+
+    let x = data.coords[0]
+    let y = data.coords[1]
+
+    let query = `UPDATE tracker SET coords = '(${x},${y})' WHERE id = ${id}`;
+
+    pool.query(query, (error, results) => {
+      if (error) {
+        throw error
+      } 
+      let message = "POST request processed successfully"
+      response.status(200).json(message)
+    })
   }
-
-  console.log("POST request: \n Contents: ");
-
-  const id = parseInt(request.params.id)
-  const data = request.body;
-
-  console.log(data);
-  // data = { coords: [ 14.64827247, 121.0737752 ] }
-
-
-  let x = data.coords[0]
-  let y = data.coords[1]
-
-
-  let query = `UPDATE tracker SET coords = '(${x},${y})' WHERE id = ${id}`;
-
-  pool.query(query, (error, results) => {
-    if (error) {
-      throw error
-    } 
-    let message = "goods"
-    response.status(200).json(message)
-  } )
-  // why does this line break code??
-  // response.status(200).json("not success :<")
 })
-
 
 
 router.put('/:id', (req, res) => {
@@ -93,14 +82,12 @@ router.put('/:id', (req, res) => {
     res.status(404).send('The jeep with the given ID was not found')
   }
 
-  
-  // TODO input validation JOI
 
   jeep.coords = req.body.coords;
   res.send(jeep);
 
   /*
-  Sample request
+  Sample PUT request
   {
     "id": 1,
     "coords": [
