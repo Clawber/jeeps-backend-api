@@ -68,6 +68,7 @@ router.post('/:id', (request, response) => {
 
     pool.query(query, (error, results) => {
       if (error) {
+        // TODO: does error crash the server?
         throw error
       } 
       let message = "POST request processed successfully"
@@ -99,14 +100,12 @@ router.put('/:id', (req, res) => {
 module.exports = router;
 
 
-/* ------TODO
-// endpoints needed
-
-
-PUT a single jeep
-  modify values
-
-*/
+/* ------
+TODO: 
+modify behaviour of POST and PUT request
+  originally:                     currently:
+    POST saves a new entry    -> updates a jeep position
+    PUT updates an entry      -> creates a new entry
 
 
 /*
